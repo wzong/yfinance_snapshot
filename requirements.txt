@@ -1,0 +1,10 @@
+beautifulsoup4
+finnhub-python
+numpy
+pandas
+pandas_datareader
+yfinance==0.1.70
+mypy-protobuf
+mypy>=0.910
+types-protobuf>=0.1.14
+protobuf

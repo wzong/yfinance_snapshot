@@ -1,0 +1,33 @@
+kind: Deployment
+apiVersion: apps/v1 # for versions before 1.9.0 use apps/v1beta2
+metadata:
+  name: yfinance-snapshot-deployment
+spec:
+  selector:
+    matchLabels:
+      app: yfinance-snapshot
+  replicas: 1
+  template:
+    metadata:
+      labels:
+        app: yfinance-snapshot
+    spec:
+      containers:
+      - name: yfinance-snapshot
+        image: wzong/yfinance-snapshot:latest
+        env:
+        - name: YF_SNAPSHOT_DB_PATH
+          value: "/var/pvc0001/yfinance_snapshot"
+        - name: YF_SNAPSHOT_DB_RAW_PATH
+          value: "/var/pvc0001/yfinance_snapshot_raw"
+        - name: YF_SNAPSHOT_ONESHOT
+          value: "FALSE"
+        - name: PYTHONUNBUFFERED
+          value: "TRUE"
+        volumeMounts:
+        - mountPath: /var/pvc0001
+          name: pvc0001
+      volumes:
+      - name: pvc0001
+        persistentVolumeClaim:
+          claimName: pvc0001

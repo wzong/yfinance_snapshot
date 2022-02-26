@@ -1,0 +1,19 @@
+{
+  "[starlark]": {
+    "editor.tabSize": 4
+  },
+  "editor.tabSize": 2,
+  "editor.insertSpaces": true,
+  "editor.detectIndentation": false,
+  "editor.rulers": [100],
+  "python.autoComplete.extraPaths": ["${workspaceFolder}/bazel-bin/"],
+  "files.exclude": {
+    "**/*.pyc": true,
+  },
+  "files.trimTrailingWhitespace": true,
+  "files.insertFinalNewline": true,
+  "python.analysis.extraPaths": [
+    "${workspaceFolder}/bazel-bin/"
+  ],
+  "python.languageServer": "Pylance"
+}

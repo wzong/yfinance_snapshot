@@ -1,0 +1,133 @@
+syntax = "proto3";
+
+package fanalysts.protos.yfinance;
+
+// ----------------------------- Analysis ---------------------------------
+
+message Estimate {
+  double low = 1;
+  double high = 2;
+  double average = 3;
+  int32 num_analysts = 4;
+  // The YoY growth between average estimate vs baseline (1y ago).
+  double growth = 5;
+  // The baseline value (1y ago) to compute the YoY growth.
+  double year_ago = 6;
+}
+
+message Snapshot {
+  // Number of days ago when the snapshot was made.
+  int32 days_ago = 1;
+  // Snapshot value.
+  double value = 2;
+  // Number of analysts that raised the value from days_ago to current.
+  int32 num_ups = 3;
+  // Number of analysts that lowered the value from days_ago to current.
+  int32 num_downs = 4;
+}
+
+message Period {
+  // Name of the period, e.g. -1q, +5y.
+  string name = 1;
+  // End date of the period.
+  string end_date = 2;
+  // Eps estimate for the end of the period.
+  Estimate eps_estimate = 3;
+  // Revenue estimate for the end of the period.
+  Estimate revenue_estimate = 4;
+  // Previous snapshots for the eps estimate.
+  repeated Snapshot eps_estimate_snapshots = 5;
+}
+
+message Analysis {
+  repeated Period periods = 1;
+}
+
+// ----------------------------- Info ---------------------------------
+
+// TTM (Trailing 12 month) profitability
+message Profitability {
+  double profit_margin = 1;
+  double operating_margin = 2;
+  double gross_margin = 3;
+  double ebitda_margin = 4;
+}
+
+// TTM (Trailing 12 month) Income
+message IncomeStatement {
+  // Revenue
+  double revenue = 1;
+  double revenue_per_share = 2;
+  double revenue_growth = 3; // Yearly revenue growth
+  double revenue_quarterly_growth = 4; // Avg quarterly YOY growth
+
+  // Profit
+  double gross_profit = 5;
+  double ebitda = 6;
+
+  // Net income
+  double earnings = 7; // Net income avi to common
+  double earnings_per_share = 8; // Trailing diluted EPS
+  double earnings_growth = 9;
+  double earnings_quarterly_growth = 10;
+}
+
+// MRQ (Most-Recent-Quarter) Balance Sheet
+message BalanceSheet {
+  double total_cash = 1;
+  double total_cash_per_share = 2;
+  double total_debt = 3;
+  double total_debt_to_equity = 4;
+  double current_ratio = 5;
+  double book_value = 6;
+}
+
+// TTM (Trailing 12 month) Cash Flow
+message CashFlowStatement {
+  // TODO: capture relevant fields
+}
+
+message PriceHistory {
+  double beta = 1; // 5Y monthly beta
+  double high_52w = 2;
+  double low_52w = 3;
+  double ma_50d = 4;
+  double ma_200d = 5;
+}
+
+message ShareStats {
+  double average_volume_3m = 1;
+  double average_volume_10d = 2;
+  double outstanding = 3;
+  double implied_outstanding = 4;
+  double float = 5;
+  double insider_precent = 6;
+  double institutions_percent = 7;
+  double short = 8;
+  double short_prev_month = 9;
+  double short_ratio = 10;
+}
+
+message Dividend {
+  double forward = 1;
+  double forward_yield = 2;
+  string date = 3;
+  string ex_date = 4;
+  double payout_ratio = 5;
+
+  double trailing = 6;
+  double trailing_yield = 7;
+  double trailing_yield_5y = 8;
+}
+
+message Info {
+  // 12months price target
+  Estimate price_target = 1;
+  Profitability profitability = 2;
+  IncomeStatement income = 3;
+  BalanceSheet balance_sheet = 4;
+  CashFlowStatement cash_flow = 5;
+  PriceHistory price_history = 6;
+  ShareStats shares_stats = 7;
+  Dividend dividend = 8;
+}
