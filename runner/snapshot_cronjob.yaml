@@ -1,0 +1,33 @@
+apiVersion: batch/v1
+kind: CronJob
+metadata:
+  name: yfinance-snapshot-cronjob
+spec:
+  schedule: "0 */6 * * *"
+  successfulJobsHistoryLimit: 28
+  failedJobsHistoryLimit: 28
+  jobTemplate:
+    spec:
+      template:
+        spec:
+          containers:
+          - name: yfinance-snapshot
+            image: wzong/yfinance-snapshot:latest
+            imagePullPolicy: Always
+            env:
+            - name: YF_SNAPSHOT_DB_PATH
+              value: "/var/pvc0001/yfinance_snapshot"
+            - name: YF_SNAPSHOT_DB_RAW_PATH
+              value: "/var/pvc0001/yfinance_snapshot_raw"
+            - name: YF_SNAPSHOT_ONESHOT
+              value: "FALSE"
+            - name: PYTHONUNBUFFERED
+              value: "TRUE"
+            volumeMounts:
+            - mountPath: /var/pvc0001
+              name: pvc0001
+          volumes:
+          - name: pvc0001
+            persistentVolumeClaim:
+              claimName: pvc0001
+          restartPolicy: OnFailure

@@ -55,19 +55,29 @@ if __name__ == '__main__':
     db.Set('YF_SNAPSHOT_TICKERS', tickers_str)
 
   while True:
-    try:
-      db = sqlite.ShardedSqliteStorage(db_path)
-      db_raw = sqlite.ShardedSqliteStorage(db_raw_path) if db_raw_path else None
+    db = sqlite.ShardedSqliteStorage(db_path)
+    db_raw = sqlite.ShardedSqliteStorage(db_raw_path) if db_raw_path else None
 
-      for t in tickers_str.split(','):
-        t = t.strip()
-        logging.info('Snapshotting %s' % t)
+    errors = []
+    for t in tickers_str.split(','):
+      t = t.strip()
+      logging.info('Snapshotting %s' % t)
+      try:
         TakeSnapshot(t, db, db_raw)
-    except:
-      logging.error(traceback.format_exc())
+      except:
+        errors.append(t)
+        logging.error(traceback.format_exc())
+
+    err_msg = 'Failed to snapshot: [%s]' % ','.join(errors)
+
     if oneshot_mode == 'FALSE':
-      logging.info('Finished oneshot')
+      if errors:
+        raise Exception(err_msg)
+      else:
+        logging.info('Finished oneshot')
       break
     else:
+      if errors:
+        logging.error(err_msg)
       logging.info('Sleeping for 7200s...')
       time.sleep(7200)
